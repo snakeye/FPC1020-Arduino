@@ -9,16 +9,16 @@ void setup()
     Serial.begin(115200);
 
     fpc.init();
-    fpc.reset();
-
-    delay(300);
 }
 
 void loop()
 {
     Serial.println("FPC1020 test");
-    Serial.print("Hardware ID: ");
-    Serial.println(fpc.hardware_id());
+    fpc.reset();
+
+    delay(300);
+
+    Serial.printf("Hardware ID: 0x%04X\n", fpc.hardware_id());
 
     delay(1000);
 }
