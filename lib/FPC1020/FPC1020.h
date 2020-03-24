@@ -6,8 +6,8 @@ enum fpc1020_reg
     FPC102X_REG_FPC_STATUS = 20,                /* RO, 1 bytes  */
     FPC102X_REG_READ_INTERRUPT = 24,            /* RO, 1 byte   */
     FPC102X_REG_READ_INTERRUPT_WITH_CLEAR = 28, /* RO, 1 byte   */
-    FPC102X_REG_FINGER_PRESENT_QUERY = 32,      /* */
-    FPC102X_REG_WAIT_FOR_FINGER = 36,           /* */
+    FPC102X_REG_FINGER_PRESENT_QUERY = 32,      /* Checks if a finger is present. */
+    FPC102X_REG_WAIT_FOR_FINGER = 36,           /* Continue to check for a finger until a finger is present. */
     FPC102X_REG_READ_ERROR_WITH_CLEAR = 56,     /* RO, 1 byte   */
     FPC102X_REG_MISO_EDGE_RIS_EN = 64,          /* WO, 1 byte   */
     FPC102X_REG_FPC_CONFIG = 68,                /* RW, 1 byte   */
@@ -57,6 +57,7 @@ public:
 
 public:
     void command(fpc1020_reg reg);
+
     uint8_t transmit8(fpc1020_reg reg, uint8_t val);
     uint16_t transmit16(fpc1020_reg reg, uint16_t val);
     uint32_t transmit32(fpc1020_reg reg, uint32_t val);

@@ -36,23 +36,23 @@ void FPC1020::setup()
 
 void FPC1020::setup_rev3()
 {
-    transmit64(FPC102X_REG_SAMPLE_PX_DLY, 0x1717171723232323);
+    Serial.printf("0x%016llX\n", transmit64(FPC102X_REG_SAMPLE_PX_DLY, 0x1717171723232323ULL));
 
-    transmit8(FPC102X_REG_PXL_RST_DLY, 0x0f);
+    Serial.printf("0x%02X\n", transmit8(FPC102X_REG_PXL_RST_DLY, 0x0f));
 
-    transmit8(FPC102X_REG_FINGER_DRIVE_DLY, 0x18);
+    Serial.printf("0x%02X\n", transmit8(FPC102X_REG_FINGER_DRIVE_DLY, 0x18));
 
-    transmit8(FPC102X_REG_FINGER_DRIVE_CONF, 0x02);
+    Serial.printf("0x%02X\n", transmit8(FPC102X_REG_FINGER_DRIVE_CONF, 0x02));
 
-    transmit16(FPC102X_REG_ADC_SHIFT_GAIN, 0x1002);
+    Serial.printf("0x%04X\n", transmit16(FPC102X_REG_ADC_SHIFT_GAIN, 0x1002));
 
-    transmit16(FPC102X_REG_PXL_CTRL, 0x000a | 0x0F00);
+    Serial.printf("0x%04X\n", transmit16(FPC102X_REG_PXL_CTRL, 0x000a | 0x0F00));
 
-    transmit8(FPC102X_REG_IMAGE_SETUP, 0x03 | 0x08);
+    Serial.printf("0x%02X\n", transmit8(FPC102X_REG_IMAGE_SETUP, 0x03 | 0x08));
 
-    transmit8(FPC1020_REG_FNGR_DET_THRES, 0x50);
+    Serial.printf("0x%02X\n", transmit8(FPC1020_REG_FNGR_DET_THRES, 0x50));
 
-    transmit16(FPC1020_REG_FNGR_DET_CNTR, 0x00FF);
+    Serial.printf("0x%04X\n", transmit16(FPC1020_REG_FNGR_DET_CNTR, 0x00FF));
 }
 
 uint8_t FPC1020::interrupt(bool clear)
@@ -112,7 +112,8 @@ uint32_t FPC1020::transmit32(fpc1020_reg reg, uint32_t val)
 
     for (unsigned int i = 0; i < sizeof(uint32_t); i++)
     {
-        pout[i] = SPI.transfer(sizeof(uint32_t) - pin[i] - 1);
+        pout[sizeof(uint32_t) - i - 1] = SPI.transfer(pin[sizeof(uint32_t) - i - 1]);
+        // pout[i] = SPI.transfer(pin[i]);
     }
 
     digitalWrite(PIN_SPI_SS, HIGH);
@@ -132,7 +133,8 @@ uint64_t FPC1020::transmit64(fpc1020_reg reg, uint64_t val)
 
     for (unsigned int i = 0; i < sizeof(uint64_t); i++)
     {
-        pout[i] = SPI.transfer(sizeof(uint64_t) - pin[i] - 1);
+        pout[sizeof(uint64_t) - i - 1] = SPI.transfer(pin[sizeof(uint64_t) - i - 1]);
+        // pout[i] = SPI.transfer(pin[i]);
     }
 
     digitalWrite(PIN_SPI_SS, HIGH);
