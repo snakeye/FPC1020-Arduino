@@ -36,7 +36,7 @@ void FPC1020::setup()
 
 void FPC1020::setup_rev3()
 {
-    transmit64(FPC102X_REG_SAMPLE_PX_DLY, 0x1717171723232323ULL);
+    transmit64(FPC102X_REG_SAMPLE_PX_DLY, 0x1717171723232323);
 
     transmit8(FPC102X_REG_PXL_RST_DLY, 0x0f);
 
@@ -55,9 +55,31 @@ void FPC1020::setup_rev3()
     transmit16(FPC1020_REG_FNGR_DET_CNTR, 0x00FF);
 }
 
+uint8_t FPC1020::interrupt(bool clear)
+{
+    return transmit8(clear ? FPC102X_REG_READ_INTERRUPT_WITH_CLEAR : FPC102X_REG_READ_INTERRUPT, 0);
+}
+
+uint8_t FPC1020::error()
+{
+    return transmit8(FPC102X_REG_READ_ERROR_WITH_CLEAR, 0);
+}
+
 uint16_t FPC1020::hardware_id()
 {
     return transmit16(FPC102X_REG_HWID, 0);
+}
+
+uint16_t FPC1020::finger_present_status()
+{
+    return transmit16(FPC102X_REG_FINGER_PRESENT_STATUS, 0);
+}
+
+void FPC1020::command(fpc1020_reg reg)
+{
+    digitalWrite(PIN_SPI_SS, LOW);
+    SPI.write(reg);
+    digitalWrite(PIN_SPI_SS, HIGH);
 }
 
 uint8_t FPC1020::transmit8(fpc1020_reg reg, uint8_t val)
