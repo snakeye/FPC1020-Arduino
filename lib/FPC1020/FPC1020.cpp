@@ -103,19 +103,63 @@ uint16_t FPC1020::transmit16(fpc1020_reg reg, uint16_t val)
 uint32_t FPC1020::transmit32(fpc1020_reg reg, uint32_t val)
 {
     digitalWrite(PIN_SPI_SS, LOW);
+
     SPI.write(reg);
-    uint32_t ret = 0;
-    SPI.transferBytes((uint8_t *)&ret, (uint8_t *)&val, sizeof(val));
+
+    uint32_t out = 0;
+    uint8_t *pout = (uint8_t *)&out;
+    uint8_t *pin = (uint8_t *)&val;
+
+    if ((SPI1C & (SPICWBO | SPICRBO)))
+    {
+        //LSBFIRST
+        for (unsigned int i = 0; i < sizeof(uint32_t); i++)
+        {
+            pout[i] = SPI.transfer(sizeof(uint32_t) - pin[i] - 1);
+        }
+    }
+    else
+    {
+        //MSBFIRST
+        for (unsigned int i = 0; i < sizeof(uint32_t); i++)
+        {
+            pout[i] = SPI.transfer(pin[i]);
+        }
+    }
+
     digitalWrite(PIN_SPI_SS, HIGH);
-    return ret;
+
+    return out;
 }
 
 uint64_t FPC1020::transmit64(fpc1020_reg reg, uint64_t val)
 {
     digitalWrite(PIN_SPI_SS, LOW);
+
     SPI.write(reg);
-    uint64_t ret = 0;
-    SPI.transferBytes((uint8_t *)&ret, (uint8_t *)&val, sizeof(val));
+
+    uint64_t out = 0;
+    uint8_t *pout = (uint8_t *)&out;
+    uint8_t *pin = (uint8_t *)&val;
+
+    if ((SPI1C & (SPICWBO | SPICRBO)))
+    {
+        //LSBFIRST
+        for (unsigned int i = 0; i < sizeof(uint64_t); i++)
+        {
+            pout[i] = SPI.transfer(sizeof(uint64_t) - pin[i] - 1);
+        }
+    }
+    else
+    {
+        //MSBFIRST
+        for (unsigned int i = 0; i < sizeof(uint64_t); i++)
+        {
+            pout[i] = SPI.transfer(pin[i]);
+        }
+    }
+
     digitalWrite(PIN_SPI_SS, HIGH);
-    return ret;
+
+    return out;
 }

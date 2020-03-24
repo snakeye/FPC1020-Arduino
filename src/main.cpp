@@ -11,15 +11,15 @@ void setup()
     fpc.init();
     fpc.reset();
 
-    delay(300);
+    delay(2000);
+
+    Serial.println("FPC1020 test");
 
     fpc.setup();
 }
 
 void loop()
 {
-    Serial.println("FPC1020 test");
-
     Serial.printf("Hardware ID: 0x%04X\n", fpc.hardware_id());
 
     fpc.command(FPC102X_REG_FINGER_PRESENT_QUERY);
