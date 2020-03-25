@@ -18,6 +18,29 @@ void setup()
     fpc.setup();
 }
 
+void print_finger_present(uint16_t status)
+{
+    for (int row = 0; row < 3; row++)
+    {
+        for (int col = 0; col < 4; col++)
+        {
+            uint16_t bit = 1 << (row * 4 + col);
+
+            if ((status & bit) != 0)
+            {
+                Serial.print('#');
+            }
+            else
+            {
+                Serial.print('.');
+            }
+        }
+
+        Serial.println();
+    }
+    Serial.println();
+}
+
 void loop()
 {
     Serial.printf("Hardware ID: 0x%04X\n", fpc.hardware_id());
@@ -33,7 +56,9 @@ void loop()
 
     if (interrupt == 0x81)
     {
-        Serial.printf("Finger present status: 0x%04X\n", fpc.finger_present_status());
+        uint16_t status = fpc.finger_present_status();
+        Serial.printf("Finger present status: 0x%04X\n", status);
+        print_finger_present(status);
     }
 
     Serial.printf("Error status: 0x%02X\n", fpc.error());
